@@ -1,9 +1,11 @@
 package ru.joy_media.testapp;
 
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     TabLayout mTabLayout;
     @BindView(R.id.pager)
     ViewPager mViewPager;
+    @BindView(R.id.swipe)
+    SwipeRefreshLayout swipe;
 
 
     @Override
@@ -41,13 +45,27 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupViewPager(mViewPager);
 
+        swipe.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 2500);
+            }
+        });
+
+
         mTabLayout.setupWithViewPager(mViewPager);
 
     }
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TabFragment1(),"One");
-        adapter.addFragment(new TabFragment2(),"Two");
+        adapter.addFragment(new TabFragment1(),"ВКЛАДКА 1");
+        adapter.addFragment(new TabFragment2(),"ВКЛАДКА 2");
         viewPager.setAdapter(adapter);
     }
     public void showSnackBar(String message){
